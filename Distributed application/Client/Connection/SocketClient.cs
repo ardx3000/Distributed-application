@@ -3,16 +3,19 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Diagnostics;
+using client.Connection;
 
 namespace Client.Connection
 {
-    class SocketClient
+    public class SocketClient
     {
         private Socket _socketClient;
+        private AESEncryption _encryption;
 
-        public SocketClient()
+        public SocketClient(byte[] key, byte[] iv)
         {
             _socketClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            _encryption = new AESEncryption(key, iv);
         }
         
         public void Connect(string ipAddress, int port)
@@ -33,16 +36,23 @@ namespace Client.Connection
 
         public void Send(string data)
         {
-            byte[] byteData = Encoding.ASCII.GetBytes(data);
-            _socketClient.Send(byteData);
+            Debug.WriteLine("(CLIENT): data: " + data);
+            byte[] encryptedData = _encryption.EncryptString(data); // Encrypt the data
+            string encodedData = Convert.ToBase64String(encryptedData); // Convert the encrypted data to a string
+            Debug.WriteLine("(CLIENT): encrypted + encoded data: " + encodedData);
+            byte[] byteData = Encoding.ASCII.GetBytes(encodedData); // Convert the string to byte array
+            _socketClient.Send(byteData); // Send the encrypted and encoded data
         }
 
         public string Received()
         {
             byte[] buffer = new byte[1024];
             int bytesReceived = _socketClient.Receive(buffer);
-            return Encoding.ASCII.GetString(buffer, 0, bytesReceived);
+            string encodedResponse = Encoding.ASCII.GetString(buffer, 0, bytesReceived); // Convert the received bytes to a string
+            byte[] encryptedResponse = Convert.FromBase64String(encodedResponse); // Convert the string to byte array
+            return _encryption.DecryptBytes(encryptedResponse); // Decrypt the response
         }
+
         public void Close()
         {
             _socketClient.Shutdown(SocketShutdown.Both);
