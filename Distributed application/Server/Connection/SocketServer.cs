@@ -76,6 +76,7 @@ namespace Server.Connection
                     Debug.WriteLine("(SERVER) Received from client (encrypted): " + receivedData);
                     Debug.WriteLine("(SERVER) Received from client (decrypted): " + decryptedData);
 
+
                     // Process the decrypted data as needed
                     // Example: echo back the decrypted message
                     byte[] responseData = _encryption.EncryptString("(SERVER) Server Received: " + decryptedData);

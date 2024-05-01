@@ -6,5 +6,11 @@ namespace Server
         {
             InitializeComponent();
         }
+
+
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            richTextBox1.Text = "Hello, this is an example text displayed in a RichTextBox!";
+        }
     }
 }
