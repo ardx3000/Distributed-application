@@ -12,6 +12,8 @@ namespace Client.Connection
         private Socket _socketClient;
         private AESEncryption _encryption;
 
+        public event EventHandler<string> DataReceived;
+
         public SocketClient(byte[] key, byte[] iv)
         {
             _socketClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -44,19 +46,47 @@ namespace Client.Connection
             _socketClient.Send(byteData); // Send the encrypted and encoded data
         }
 
-        public string Received()
+        /*public string Received()
         {
             byte[] buffer = new byte[1024];
             int bytesReceived = _socketClient.Receive(buffer);
             string encodedResponse = Encoding.ASCII.GetString(buffer, 0, bytesReceived); // Convert the received bytes to a string
             byte[] encryptedResponse = Convert.FromBase64String(encodedResponse); // Convert the string to byte array
             return _encryption.DecryptBytes(encryptedResponse); // Decrypt the response
+        }*/
+
+        //modified to not block calls
+        public void ReceiveData()
+        {
+            try
+            {
+                while (true)
+                {
+                    byte[] buffer = new byte[1024];
+                    int bytesReceived = _socketClient.Receive(buffer);
+                    string encodedResponse = Encoding.ASCII.GetString(buffer, 0, bytesReceived); // Convert the received bytes to a string
+                    byte[] encryptedResponse = Convert.FromBase64String(encodedResponse); // Convert the string to byte array
+                    string decryptedResponse = _encryption.DecryptBytes(encryptedResponse); // Decrypt the response
+
+                    // Raise the DataReceived event with the decrypted response
+                    OnDataReceived(decryptedResponse);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error receiving data:" + ex.Message);
+            }
         }
 
         public void Close()
         {
             _socketClient.Shutdown(SocketShutdown.Both);
             _socketClient.Close();
+        }
+
+        protected virtual void OnDataReceived(string data)
+        {
+            DataReceived?.Invoke(this, data);
         }
     }
 }

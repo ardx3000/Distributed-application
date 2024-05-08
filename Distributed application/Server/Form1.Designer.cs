@@ -1,4 +1,8 @@
-﻿namespace Server
+﻿using static System.Net.Mime.MediaTypeNames;
+using System.Windows.Forms;
+using System.Xml.Linq;
+
+namespace Server
 {
     partial class Form1
     {
@@ -28,71 +32,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            richTextBox1 = new RichTextBox();
-            tabControl1 = new TabControl();
-            tabPage1 = new TabPage();
-            tabPage2 = new TabPage();
-            tabControl1.SuspendLayout();
+            textBox1 = new TextBox();
             SuspendLayout();
             // 
-            // richTextBox1
+            // textBox1
             // 
-            richTextBox1.Location = new Point(55, 38);
-            richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(660, 303);
-            richTextBox1.TabIndex = 1;
-            richTextBox1.Text = "";
-            richTextBox1.TextChanged += richTextBox1_TextChanged;
-            // 
-            // tabControl1
-            // 
-            tabControl1.Controls.Add(tabPage1);
-            tabControl1.Controls.Add(tabPage2);
-            tabControl1.Location = new Point(55, 6);
-            tabControl1.Name = "tabControl1";
-            tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(480, 26);
-            tabControl1.TabIndex = 2;
-            // 
-            // tabPage1
-            // 
-            tabPage1.Location = new Point(4, 24);
-            tabPage1.Name = "tabPage1";
-            tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(472, 0);
-            tabPage1.TabIndex = 0;
-            tabPage1.Text = "tabPage1";
-            tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // tabPage2
-            // 
-            tabPage2.Location = new Point(4, 24);
-            tabPage2.Name = "tabPage2";
-            tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(192, 72);
-            tabPage2.TabIndex = 1;
-            tabPage2.Text = "tabPage2";
-            tabPage2.UseVisualStyleBackColor = true;
+            textBox1.Location = new Point(12, 12);
+            textBox1.Multiline = true;
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(776, 309);
+            textBox1.TabIndex = 0;
+          //  textBox1.TextChanged += textBox1_TextChanged;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(tabControl1);
-            Controls.Add(richTextBox1);
+            Controls.Add(textBox1);
             Name = "Form1";
             Text = "Server";
-            tabControl1.ResumeLayout(false);
+            Load += Form1_Load;
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
-
-        private RichTextBox richTextBox1;
-        private TabControl tabControl1;
-        private TabPage tabPage1;
-        private TabPage tabPage2;
+        private TextBox textBox1;
     }
 }

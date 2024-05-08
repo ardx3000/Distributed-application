@@ -14,6 +14,9 @@ namespace Server.Connection
         private bool _isRunning = false;
         private AESEncryption _encryption;
 
+        public event EventHandler<string> DataReceived;
+
+
         public SocketServer(int port, byte[] key, byte[] iv)
         {
             _listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -73,9 +76,15 @@ namespace Server.Connection
                     // Decrypt received data
                     string decryptedData = _encryption.DecryptBytes(encryptedData);
 
+                    //Add timestamp
+                    string timestamp = DateTime.Now.ToString("[HH:mm:ss]");
+                    string messageWithTimestamp = timestamp + decryptedData;
+
                     Debug.WriteLine("(SERVER) Received from client (encrypted): " + receivedData);
                     Debug.WriteLine("(SERVER) Received from client (decrypted): " + decryptedData);
 
+                    //Triger the DataReceived event with the decrypt data
+                    OnDataReceived(messageWithTimestamp);
 
                     // Process the decrypted data as needed
                     // Example: echo back the decrypted message
@@ -94,6 +103,12 @@ namespace Server.Connection
                 clientSocket.Close();
                 Debug.WriteLine("(SERVER) Client Disconnected.");
             }
+        }
+
+
+        protected virtual void OnDataReceived(string data)
+        {
+            DataReceived?.Invoke(this, data);
         }
     }
 }

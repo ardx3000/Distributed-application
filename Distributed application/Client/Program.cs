@@ -8,6 +8,8 @@ namespace Client
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
+        /// 
+        //TODO Finish the linking of the data received from the server to the ui
         [STAThread]
         static void Main()
         {
