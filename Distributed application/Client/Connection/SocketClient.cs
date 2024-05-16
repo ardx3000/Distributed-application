@@ -45,18 +45,36 @@ namespace Client.Connection
             byte[] byteData = Encoding.ASCII.GetBytes(encodedData); // Convert the string to byte array
             _socketClient.Send(byteData); // Send the encrypted and encoded data
         }
-
-        /*public string Received()
+/*
+        public string Received()
         {
-            byte[] buffer = new byte[1024];
-            int bytesReceived = _socketClient.Receive(buffer);
-            string encodedResponse = Encoding.ASCII.GetString(buffer, 0, bytesReceived); // Convert the received bytes to a string
-            byte[] encryptedResponse = Convert.FromBase64String(encodedResponse); // Convert the string to byte array
-            return _encryption.DecryptBytes(encryptedResponse); // Decrypt the response
+            try
+            {
+                if (!_socketClient.Connected)
+                {
+                    Debug.WriteLine("Sock is not connected! ");
+                    return null;
+
+
+                }
+                byte[] buffer = new byte[1024];
+                int bytesReceived = _socketClient.Receive(buffer);
+                string encodedResponse = Encoding.ASCII.GetString(buffer, 0, bytesReceived); // Convert the received bytes to a string
+                byte[] encryptedResponse = Convert.FromBase64String(encodedResponse); // Convert the string to byte array
+                return _encryption.DecryptBytes(encryptedResponse); // Decrypt the response
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error receving data " + ex.Message);
+                return null;
+            }
+
+
         }*/
 
         //modified to not block calls
-        public void ReceiveData()
+       public void ReceiveData()
         {
             try
             {

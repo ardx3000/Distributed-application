@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             textBox1 = new TextBox();
+            button1 = new Button();
+            label1 = new Label();
             SuspendLayout();
             // 
             // textBox1
@@ -40,11 +42,33 @@
             textBox1.TabIndex = 1;
             textBox1.TextChanged += textBox1_TextChanged;
             // 
+            // button1
+            // 
+            button1.Location = new Point(352, 365);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 2;
+            button1.Text = "Test";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(330, 347);
+            label1.Name = "label1";
+            label1.Size = new Size(127, 15);
+            label1.TabIndex = 3;
+            label1.Text = "Send data to the server";
+            label1.Click += label1_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(label1);
+            Controls.Add(button1);
             Controls.Add(textBox1);
             Name = "Form1";
             Text = "Client";
@@ -56,5 +80,7 @@
         #endregion
 
         private TextBox textBox1;
+        private Button button1;
+        private Label label1;
     }
 }

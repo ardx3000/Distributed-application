@@ -10,6 +10,7 @@ namespace Client
         /// </summary>
         /// 
         //TODO Finish the linking of the data received from the server to the ui
+        //TODO Fix the problem where the client does not receive data from the server , posible cause that the client starts before the server and it does not have a recconection mechanism.
         [STAThread]
         static void Main()
         {
@@ -20,19 +21,37 @@ namespace Client
 
             SocketClient socketClient = new SocketClient(key, iv);
 
-            socketClient.Connect("127.0.0.1", 9999);
+            // socketClient.Connect("127.0.0.1", 9999);
 
-            socketClient.Send("(CLIENT) Hello from client! ");
-
-            string response = socketClient.Received();
-            Debug.WriteLine("(CLIENT) Server: " + response);
-
-            socketClient.Close();
+            // socketClient.Send("(CLIENT) Hello from client! ");
             
+            Thread connectThread = new Thread(() =>
+            {
+                socketClient.Connect("127.0.0.1", 9999);
+
+            });
+            connectThread.Start();
+            //Posible threading problem
+            Thread receiveThread = new Thread(() =>
+            {
+                socketClient.ReceiveData();
+                Debug.WriteLine("(ON CLIENT)" + socketClient.ReceiveData);
+            });
+            receiveThread.Start();
+            //string response = socketClient.ReceiveData();
+            //Debug.WriteLine("(CLIENT) Server: " + response);
+
+            //socketClient.Close();
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            Form1 mainForm = new Form1(socketClient);
+            Application.Run(mainForm);
+
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new Form1());
+            //ApplicationConfiguration.Initialize();
+
         }
     }
 }

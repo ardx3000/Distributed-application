@@ -13,6 +13,7 @@ namespace Server.Connection
         private Thread _listenerThread;
         private bool _isRunning = false;
         private AESEncryption _encryption;
+        private List<Socket> _connectedClients = new List<Socket>(); // list with all the connected clients
 
         public event EventHandler<string> DataReceived;
 
@@ -47,6 +48,9 @@ namespace Server.Connection
                 Socket clientSocket = _listener.Accept();
                 Debug.WriteLine("(SERVER) Client Connected: " + clientSocket.RemoteEndPoint.ToString());
 
+                //Add the newly connected client to the list
+                _connectedClients.Add(clientSocket);
+
                 //Adding each client to a thread
                 Thread clientThread = new Thread(HandleClient);
                 clientThread.Start(clientSocket);
@@ -60,6 +64,12 @@ namespace Server.Connection
 
             try
             {
+                string notification = "(From SERVER) new client connected: " + clientSocket.RemoteEndPoint.ToString();
+                byte[] notificationData = Encoding.ASCII.GetBytes(notification);
+                foreach (Socket connectedClient in _connectedClients)
+                {
+                    connectedClient.Send(notificationData);
+                }
                 while (_isRunning)
                 {
                     int bytesReceived = clientSocket.Receive(buffer);
