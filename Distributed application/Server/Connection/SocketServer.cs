@@ -98,7 +98,7 @@ namespace Server.Connection
 
                     // Process the decrypted data as needed
                     // Example: echo back the decrypted message
-                    byte[] responseData = _encryption.EncryptString("(SERVER) Server Received: " + decryptedData);
+                    byte[] responseData = _encryption.EncryptString("(From SERVER On Client) Server Received: " + decryptedData);
                     string encryptedResponse = Convert.ToBase64String(responseData);
                     clientSocket.Send(Encoding.ASCII.GetBytes(encryptedResponse));
                 }

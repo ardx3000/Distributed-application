@@ -32,11 +32,7 @@ namespace Client
             });
             connectThread.Start();
             //Posible threading problem
-            Thread receiveThread = new Thread(() =>
-            {
-                socketClient.ReceiveData();
-                Debug.WriteLine("(ON CLIENT)" + socketClient.ReceiveData);
-            });
+            Thread receiveThread = new Thread(socketClient.ReceiveData);
             receiveThread.Start();
             //string response = socketClient.ReceiveData();
             //Debug.WriteLine("(CLIENT) Server: " + response);

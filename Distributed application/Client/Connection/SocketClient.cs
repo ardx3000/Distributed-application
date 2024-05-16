@@ -11,6 +11,9 @@ namespace Client.Connection
     {
         private Socket _socketClient;
         private AESEncryption _encryption;
+        private bool _connected = false;
+        private int _maxRetries = 3;
+        private TimeSpan _retryInterval = TimeSpan.FromSeconds(5);
 
         public event EventHandler<string> DataReceived;
 
@@ -22,17 +25,38 @@ namespace Client.Connection
         
         public void Connect(string ipAddress, int port)
         {
-            IPAddress serverIP = IPAddress.Parse(ipAddress);
-            IPEndPoint remoteEP = new IPEndPoint(serverIP, port);
+            int retries = 0;
+            
+            while (!_connected && retries < _maxRetries)
+            {
+                try
+                {
+                    IPAddress serverIP = IPAddress.Parse(ipAddress);
+                    IPEndPoint remoteEP = new IPEndPoint(serverIP, port);
+                    _socketClient.Connect(remoteEP);
+                    _connected = true;
+                }
+                catch (FormatException ex)
+                {
+                    Debug.WriteLine("Invalid IP address fromat: " + ipAddress);
+                    break;
+                }
+                catch(Exception ex)
+                {
+                    Debug.WriteLine($"Connection attempt failed: {ex.Message}");
+                    retries++;
+                    Debug.WriteLine($"Retrying connection... (Attempt {retries}/{_maxRetries})");
 
-            try
-            {
-                _socketClient.Connect(remoteEP);
-                Debug.WriteLine("Connected to {0}", _socketClient.RemoteEndPoint.ToString());
+                    // Exponential backoff: Increase the retry interval exponentially
+                    Thread.Sleep(_retryInterval);
+                    _retryInterval = TimeSpan.FromSeconds(_retryInterval.TotalSeconds * 2);
+                }
             }
-            catch(Exception ex)
+
+
+            if (!_connected)
             {
-                Debug.WriteLine("Connection failed: " +  ex.Message);
+                Debug.WriteLine("Field to connect after max retries! ");
             }
         }
 
