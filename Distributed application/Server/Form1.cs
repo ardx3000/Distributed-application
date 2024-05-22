@@ -6,6 +6,10 @@ namespace Server
     {
         private Connection.SocketServer _socketServer;
 
+        //TODO Assign Username
+        //TODO Assign password
+        //TODO Assign Role
+        //TODO Assign Button
 
         public Form1(SocketServer server)
         {
@@ -55,5 +59,9 @@ namespace Server
 
         }
 
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
