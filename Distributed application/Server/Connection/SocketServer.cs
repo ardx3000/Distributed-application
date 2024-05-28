@@ -13,6 +13,10 @@ namespace Server.Connection
         private Thread _listenerThread;
         private bool _isRunning = false;
         private AESEncryption _encryption;
+        private List<Socket> _connectedClients = new List<Socket>(); // list with all the connected clients
+
+        public event EventHandler<string> DataReceived;
+
 
         public SocketServer(int port, byte[] key, byte[] iv)
         {
@@ -44,6 +48,9 @@ namespace Server.Connection
                 Socket clientSocket = _listener.Accept();
                 Debug.WriteLine("(SERVER) Client Connected: " + clientSocket.RemoteEndPoint.ToString());
 
+                //Add the newly connected client to the list
+                _connectedClients.Add(clientSocket);
+
                 //Adding each client to a thread
                 Thread clientThread = new Thread(HandleClient);
                 clientThread.Start(clientSocket);
@@ -57,6 +64,12 @@ namespace Server.Connection
 
             try
             {
+                string notification = "(From SERVER) new client connected: " + clientSocket.RemoteEndPoint.ToString();
+                byte[] notificationData = Encoding.ASCII.GetBytes(notification);
+                foreach (Socket connectedClient in _connectedClients)
+                {
+                    connectedClient.Send(notificationData);
+                }
                 while (_isRunning)
                 {
                     int bytesReceived = clientSocket.Receive(buffer);
@@ -73,12 +86,19 @@ namespace Server.Connection
                     // Decrypt received data
                     string decryptedData = _encryption.DecryptBytes(encryptedData);
 
+                    //Add timestamp
+                    string timestamp = DateTime.Now.ToString("[HH:mm:ss]");
+                    string messageWithTimestamp = timestamp + decryptedData;
+
                     Debug.WriteLine("(SERVER) Received from client (encrypted): " + receivedData);
                     Debug.WriteLine("(SERVER) Received from client (decrypted): " + decryptedData);
 
+                    //Triger the DataReceived event with the decrypt data
+                    OnDataReceived(messageWithTimestamp);
+
                     // Process the decrypted data as needed
                     // Example: echo back the decrypted message
-                    byte[] responseData = _encryption.EncryptString("(SERVER) Server Received: " + decryptedData);
+                    byte[] responseData = _encryption.EncryptString("(From SERVER On Client) Server Received: " + decryptedData);
                     string encryptedResponse = Convert.ToBase64String(responseData);
                     clientSocket.Send(Encoding.ASCII.GetBytes(encryptedResponse));
                 }
@@ -93,6 +113,12 @@ namespace Server.Connection
                 clientSocket.Close();
                 Debug.WriteLine("(SERVER) Client Disconnected.");
             }
+        }
+
+
+        protected virtual void OnDataReceived(string data)
+        {
+            DataReceived?.Invoke(this, data);
         }
     }
 }
