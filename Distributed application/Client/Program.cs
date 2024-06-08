@@ -14,7 +14,8 @@ namespace Client
             //-----------------------------------------------------------------------------------------------------------------
 
             SocketClient socketClient = new SocketClient(key, iv);
-
+            socketClient.DataReceived += SocketClient_DataReceived;
+            
             Console.WriteLine("Connecting to server...");
             socketClient.Connect("127.0.0.1", 9999);
 
@@ -22,15 +23,12 @@ namespace Client
             string userInput = Console.ReadLine();
             socketClient.Send(userInput);
 
-            string response = socketClient.Received();
-            Console.WriteLine("(CLIENT) Server: " + response);
+            
+        }
 
-            socketClient.Close();
-            Console.WriteLine("Connection closed.");
-
-            // Keep the console open until the user decides to close it.
-            Console.WriteLine("Press Enter to exit...");
-            Console.ReadLine();
+        private static void SocketClient_DataReceived(object sender, string data)
+        {
+            Console.WriteLine($"Data received: {data}");
         }
     }
 }

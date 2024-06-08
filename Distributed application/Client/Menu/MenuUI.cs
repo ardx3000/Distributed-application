@@ -2,7 +2,7 @@
 
 namespace Client.Menu
 {
-    public class Menu
+    public class MenuUI
     {
 
     }

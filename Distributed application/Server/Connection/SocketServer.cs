@@ -14,7 +14,7 @@ namespace Server.Connection
         private Thread _listenerThread;
         private bool _isRunning = false;
         private AESEncryption _encryption;
-        private List<Socket> _connectedClients = new List<Socket>(); // list with all the connected clients
+        private static List<Socket> _connectedClients = new List<Socket>(); // list with all the connected clients
 
         public event EventHandler<string> DataReceived;
 
@@ -89,10 +89,7 @@ namespace Server.Connection
 
                     //Add timestamp
                     string timestamp = DateTime.Now.ToString("[HH:mm:ss]");
-                    string messageWithTimestamp = timestamp + decryptedData;
-
-                    Debug.WriteLine("(SERVER) Received from client (encrypted): " + receivedData);
-                    Debug.WriteLine("(SERVER) Received from client (decrypted): " + decryptedData);
+                    string messageWithTimestamp = $"{timestamp}: {decryptedData}";
 
                     //Triger the DataReceived event with the decrypt data
                     OnDataReceived(messageWithTimestamp);
@@ -115,11 +112,11 @@ namespace Server.Connection
                 Debug.WriteLine("(SERVER) Client Disconnected.");
             }
         }
-        public void DisplayConnectedClients()
+        public static void DisplayConnectedClients()
         {
             foreach (Socket connection in _connectedClients)
             {
-                Console.WriteLine($"{connection}");
+                Console.WriteLine($"{connection.RemoteEndPoint}");
             }
         }
 

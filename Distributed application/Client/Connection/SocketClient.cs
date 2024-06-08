@@ -15,7 +15,7 @@ namespace Client.Connection
         private int _maxRetries = 3;
         private TimeSpan _retryInterval = TimeSpan.FromSeconds(5);
 
-       // public event EventHandler<string> DataReceived;
+        public event EventHandler<string> DataReceived;
 
         public SocketClient(byte[] key, byte[] iv)
         {
@@ -70,28 +70,26 @@ namespace Client.Connection
             _socketClient.Send(byteData); // Send the encrypted and encoded data
         }
 
-        public string Received()
+        public void Received()
         {
             try
             {
                 if (!_socketClient.Connected)
                 {
                     Debug.WriteLine("Sock is not connected! ");
-                    return null;
-
-
+                    return;
                 }
                 byte[] buffer = new byte[1024];
                 int bytesReceived = _socketClient.Receive(buffer);
                 string encodedResponse = Encoding.ASCII.GetString(buffer, 0, bytesReceived); // Convert the received bytes to a string
                 byte[] encryptedResponse = Convert.FromBase64String(encodedResponse); // Convert the string to byte array
-                return _encryption.DecryptBytes(encryptedResponse); // Decrypt the response
-
+                string  decryptedResponse = _encryption.DecryptBytes(encryptedResponse); // Decrypt the response
+                OnDataReceived(decryptedResponse);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("Error receving data " + ex.Message);
-                return null;
+                return;
             }
 
 
@@ -125,10 +123,10 @@ namespace Client.Connection
             _socketClient.Shutdown(SocketShutdown.Both);
             _socketClient.Close();
         }
-        /*
+        
         protected virtual void OnDataReceived(string data)
         {
             DataReceived?.Invoke(this, data);
-        }*/
+        }
     }
 }
