@@ -15,7 +15,7 @@ namespace Client.Connection
         private int _maxRetries = 3;
         private TimeSpan _retryInterval = TimeSpan.FromSeconds(5);
 
-        public event EventHandler<string> DataReceived;
+       // public event EventHandler<string> DataReceived;
 
         public SocketClient(byte[] key, byte[] iv)
         {
@@ -69,7 +69,7 @@ namespace Client.Connection
             byte[] byteData = Encoding.ASCII.GetBytes(encodedData); // Convert the string to byte array
             _socketClient.Send(byteData); // Send the encrypted and encoded data
         }
-/*
+
         public string Received()
         {
             try
@@ -95,8 +95,8 @@ namespace Client.Connection
             }
 
 
-        }*/
-
+        }
+        /*
         //modified to not block calls
        public void ReceiveData()
         {
@@ -119,16 +119,16 @@ namespace Client.Connection
                 Debug.WriteLine("Error receiving data:" + ex.Message);
             }
         }
-
+        */
         public void Close()
         {
             _socketClient.Shutdown(SocketShutdown.Both);
             _socketClient.Close();
         }
-
+        /*
         protected virtual void OnDataReceived(string data)
         {
             DataReceived?.Invoke(this, data);
-        }
+        }*/
     }
 }

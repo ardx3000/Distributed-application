@@ -3,12 +3,12 @@ using System.Diagnostics;
 
 namespace Server
 {
-    internal static class Program
+    static class Program
     {
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
-        [STAThread]
+
         static void Main()
         {
             // SENSITIVE DATA ONLY HARDCODED FOR DEMOSTRATION.
@@ -18,13 +18,9 @@ namespace Server
 
             SocketServer server = new SocketServer(9999, key, iv);
             server.Start();
-            Debug.WriteLine("(SERVER) Server is starting and listening to connections....");
+            Console.WriteLine("(SERVER) Server is starting and listening to connections....");
 
 
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
-            ApplicationConfiguration.Initialize();
-            Application.Run(new Form1(server));
         }
     }
 }
