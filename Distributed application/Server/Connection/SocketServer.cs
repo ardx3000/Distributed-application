@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Server.Connection
 {
@@ -43,7 +44,7 @@ namespace Server.Connection
         private void ListenForClients()
         {
             while (_isRunning)
-            {   
+            {
                 //Client connecting
                 Socket clientSocket = _listener.Accept();
                 Debug.WriteLine("(SERVER) Client Connected: " + clientSocket.RemoteEndPoint.ToString());
@@ -94,7 +95,7 @@ namespace Server.Connection
                     Debug.WriteLine("(SERVER) Received from client (decrypted): " + decryptedData);
 
                     //Triger the DataReceived event with the decrypt data
-                   // OnDataReceived(messageWithTimestamp);
+                    OnDataReceived(messageWithTimestamp);
 
                     // Process the decrypted data as needed
                     // Example: echo back the decrypted message
@@ -114,11 +115,17 @@ namespace Server.Connection
                 Debug.WriteLine("(SERVER) Client Disconnected.");
             }
         }
+        public void DisplayConnectedClients()
+        {
+            foreach (Socket connection in _connectedClients)
+            {
+                Console.WriteLine($"{connection}");
+            }
+        }
 
-        /*
         protected virtual void OnDataReceived(string data)
         {
             DataReceived?.Invoke(this, data);
-        }*/
+        }
     }
 }

@@ -17,10 +17,16 @@ namespace Server
             //-----------------------------------------------------------------------------------------------------------------
 
             SocketServer server = new SocketServer(9999, key, iv);
+            server.DataReceived += Server_DataReceived;
             server.Start();
             Console.WriteLine("(SERVER) Server is starting and listening to connections....");
+            Console.WriteLine();
 
+        }
 
+        private static void Server_DataReceived(object sender, string data)
+        {
+            Console.WriteLine($"Data received: {data}");
         }
     }
 }

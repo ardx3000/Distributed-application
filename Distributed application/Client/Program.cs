@@ -19,7 +19,8 @@ namespace Client
             socketClient.Connect("127.0.0.1", 9999);
 
             Console.WriteLine("Sending message to server...");
-            socketClient.Send("(CLIENT) Hello from client!");
+            string userInput = Console.ReadLine();
+            socketClient.Send(userInput);
 
             string response = socketClient.Received();
             Console.WriteLine("(CLIENT) Server: " + response);
