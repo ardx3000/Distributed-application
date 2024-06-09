@@ -3,8 +3,10 @@ using Server.Menu;
 
 namespace Server
 {
-    static class Program
+    class Program
     {
+        private static MenuUI _menu = new MenuUI();
+
         static void Main()
         {
 
@@ -13,13 +15,17 @@ namespace Server
             byte[] iv = { 0xb0, 0xa1, 0xc2, 0xd3, 0xe4, 0xf5, 0x67, 0x78, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff, 0x00 };
             //-----------------------------------------------------------------------------------------------------------------
 
-            SocketServer server = new SocketServer(9999, key, iv);
-            server.DataReceived += Server_DataReceived;
-            server.Start();
+            SocketServer socketServer = new SocketServer(9999, key, iv);
+            socketServer.DataReceived += Server_DataReceived;
+            socketServer.Start();
             Console.WriteLine("(SERVER) Server is starting and listening to connections....");
-            Console.WriteLine("-------------------------------------------------------------");
-            string userInput = Console.ReadLine();
-            MenuUI.Options(userInput);
+            while (true)
+            {
+                Console.WriteLine("-------------------------------------------------------------");
+                string userInput = Console.ReadLine();
+                _menu.Options(userInput);
+            }
+
        
         }
 

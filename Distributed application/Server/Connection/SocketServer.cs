@@ -114,9 +114,35 @@ namespace Server.Connection
         }
         public static void DisplayConnectedClients()
         {
-            foreach (Socket connection in _connectedClients)
+            try
             {
-                Console.WriteLine($"{connection.RemoteEndPoint}");
+                if (_connectedClients.Count == 0)
+                {
+                    Console.WriteLine("No users connected.");
+                }
+                else
+                {
+                    foreach (Socket connection in _connectedClients)
+                    {
+                        try
+                        {
+                            // Attempt to access the RemoteEndPoint property
+                            Console.WriteLine($"{connection.RemoteEndPoint}");
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            Console.WriteLine("A connection was disposed.");
+                        }
+                        catch (SocketException ex)
+                        {
+                            Console.WriteLine($"Socket error: {ex.Message}");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An unexpected error occurred while displaying connected clients: {ex.Message}");
             }
         }
 

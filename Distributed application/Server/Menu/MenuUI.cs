@@ -3,12 +3,12 @@ using System;
 
 namespace Server.Menu
 {
-    public static class MenuUI
+    public class MenuUI
     {
-        private static List<string> _commands = new List<string> {"Help", "Display users", "User management"};
-        private static SocketServer _socketServerInstance; // Instance of SocketServer
+        private List<string> _commands = new List<string> {"Help", "Display users", "User management"};
+        private SocketServer _socketServerInstance; // Instance of SocketServer
 
-        public static void Options(string command)
+        public void Options(string command)
         {
             int index = _commands.IndexOf(command);
 
@@ -25,9 +25,7 @@ namespace Server.Menu
                     case 2:
                         UserManagement();
                         break;
-
                 }
-
             }
             else
             {
@@ -35,7 +33,7 @@ namespace Server.Menu
             }
         }
 
-        private static void Help()
+        private void Help()
         {
             foreach (string command in _commands)
             {
@@ -44,11 +42,11 @@ namespace Server.Menu
             
         }
 
-        private static void DisplayConnectedUsers()
+        private void DisplayConnectedUsers()
         {
             SocketServer.DisplayConnectedClients();
         }
 
-        private static void UserManagement() { }
+        private void UserManagement() { }
     }
 }
