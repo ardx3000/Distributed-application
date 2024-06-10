@@ -35,9 +35,11 @@ namespace Server.Menu
 
         private void Help()
         {
+            int i = 0;
             foreach (string command in _commands)
             {
-                Console.WriteLine($"{command},");
+                i++;
+                Console.WriteLine($"{i}.{command},");
             }
             
         }
@@ -47,6 +49,12 @@ namespace Server.Menu
             SocketServer.DisplayConnectedClients();
         }
 
-        private void UserManagement() { }
+        private void UserManagement()
+        {
+            //TODO call ADD USER => Create the functions that interact with db
+            //TODO call DELETE USER => Create the functions that interact with db
+        }
+
+        //TODO add a way to interactr with the db
     }
 }

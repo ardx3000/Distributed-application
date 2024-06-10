@@ -21,10 +21,11 @@ namespace Client
             
             Console.WriteLine("Connecting to server...");
             socketClient.Connect("127.0.0.1", 9999);
-
+            Console.WriteLine("Connected to server");
             MenuUI menu = new MenuUI(socketClient);
             while (true)
             {
+                Console.WriteLine("Enter your comnmand or type Help to list the commands.");
                 string userInput = Console.ReadLine();
 
                 if (userInput == "Exit") break;
