@@ -1,16 +1,16 @@
 ﻿using Server.Connection;
-using System;
 
 namespace Server.Menu
 {
-    public class MenuUI
+    public class MenuUI : MenuLogic
     {
-        private List<string> _commands = new List<string> {"Help", "Display users", "User management"};
-        private SocketServer _socketServerInstance; // Instance of SocketServer
-
+        private List<string> _generalCommands = new List<string> {"Help", "Display users", "User management"};
+        private List<string> _userCommands = new List<string> { "Back", "Show user", "Show all", "Add", "Update", "Delete" };
+        
         public void Options(string command)
         {
-            int index = _commands.IndexOf(command);
+
+            int index = _generalCommands.IndexOf(command);
 
             if (index != -1)
             {
@@ -29,32 +29,60 @@ namespace Server.Menu
             }
             else
             {
-                Console.WriteLine($"Invalid command use {_commands.ElementAt(0)} !");
+                Console.WriteLine($"Invalid command use {_generalCommands.ElementAt(0)} !");
             }
         }
 
-        private void Help()
+        public void Help()
         {
             int i = 0;
-            foreach (string command in _commands)
+            foreach (string command in _generalCommands)
             {
                 i++;
                 Console.WriteLine($"{i}.{command},");
             }
             
         }
-
-        private void DisplayConnectedUsers()
+        protected void UserManagement()
         {
-            SocketServer.DisplayConnectedClients();
-        }
+            int i = 0;
+            Console.WriteLine("Please chose one of the following commands: ");
+            foreach (string command in _userCommands)
+            {
 
-        private void UserManagement()
-        {
-            //TODO call ADD USER => Create the functions that interact with db
-            //TODO call DELETE USER => Create the functions that interact with db
-        }
+                i++;
+                Console.WriteLine($"{i}.{command},");
+            }
 
-        //TODO add a way to interactr with the db
+            string userInput = Console.ReadLine();
+
+            int index = _userCommands.IndexOf(userInput);
+            if (index != -1)
+            {
+                switch (index)
+                {
+                    case 0:
+                        return;
+                    case 1:
+                        GetUser();
+                        break;
+                    case 2:
+                        GetAllUsers();
+                        break;
+                    case 3:
+                        AddUser();
+                        break;
+                    case 4:
+                        UpdateUser();
+                        break;
+                    case 5:
+                        DeleteUser();
+                        break;
+
+                }
+            }
+            
+
+        }
     }
 }

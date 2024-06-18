@@ -2,7 +2,7 @@
 
 namespace Server.DataBase.Repository
 {
-    public class LogsRepository : BaseRepository<Logs>
+    public class LogsRepository : BaseRepository<Logs>, ILogsRepository
     {
         public LogsRepository(ApplicationContext context) : base(context)
         {

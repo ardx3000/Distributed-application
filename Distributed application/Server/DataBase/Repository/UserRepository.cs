@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Server.DataBase.UserCalsses;
+﻿using Server.DataBase.Entity;
 
 namespace Server.DataBase.Repository
 {
-    public class UserRepository : BaseRepository<User> 
+    public class UserRepository : BaseRepository<User>, IUserRepository
     {
         public UserRepository(ApplicationContext context) : base(context)
         {

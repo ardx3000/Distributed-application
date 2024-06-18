@@ -1,52 +1,42 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace Server.DataBase.Repository
+﻿namespace Server.DataBase.Repository
 {
-    public class BaseRepository<T> where T : class
+    public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
-        protected readonly DbContext _context;
-        protected readonly DbSet<T> _dbSet;
+        protected readonly ApplicationContext _context;
 
-        public BaseRepository(DbContext context)
+        public BaseRepository(ApplicationContext context)
         {
             _context = context;
-            _dbSet = _context.Set<T>();
+        }
+
+        public T Get(int id)
+        {
+            return _context.Set<T>().Find(id);
+        }
+
+        public IEnumerable<T> GetAll()
+        {
+            return _context.Set<T>().ToList();
         }
 
         public void Add(T entity)
         {
-            _dbSet.Add(entity);
-            _context.SaveChanges();
-        }
-        public void Update(T entity)
-        {
-            _dbSet.Update(entity);
-            _context.SaveChanges();
-        }
-        public void Delete(object id)
-        {
-            var entity = _dbSet.Find(id);
-
-            if (entity != null)
-            {
-                _dbSet.Remove(entity);
-                _context.SaveChanges();
-            }
+            _context.Set<T>().Add(entity);
         }
 
-        public T GetById(object id)
+        public void AddRange(IEnumerable<T> entities)
         {
-            return _dbSet.Find(id);
+            _context.Set<T>().AddRange(entities);
         }
 
-        public List<T> GetAll()
+        public void Delete(T entity)
         {
-            return _dbSet.ToList();
+            _context.Set<T>().Remove(entity);
         }
 
-        public void Dispose()
+        public void DeleteRange(IEnumerable<T> entities)
         {
-            _context.Dispose();
+            _context.Set<T>().RemoveRange(entities);
         }
     }
 }

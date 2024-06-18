@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Server.DataBase.Entity;
-using Server.DataBase.UserCalsses;
 
 namespace Server.DataBase
 {
@@ -9,9 +8,14 @@ namespace Server.DataBase
         public DbSet<User> Users { get; set; }
         public DbSet<Logs> Logs { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options)
         {
-            optionsBuilder.UseSqlite("Data Source=users.db");
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            // Configure your entities here
         }
     }
 }

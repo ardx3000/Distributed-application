@@ -1,4 +1,4 @@
-﻿namespace Server.DataBase.UserCalsses
+﻿namespace Server.DataBase.Entity
 {
     public class User
     {
