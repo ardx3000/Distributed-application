@@ -1,10 +1,7 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 using System.Diagnostics;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Server.Connection
 {
@@ -14,7 +11,7 @@ namespace Server.Connection
         private Thread _listenerThread;
         private bool _isRunning = false;
         private AESEncryption _encryption;
-        private List<Socket> _connectedClients = new List<Socket>(); // list with all the connected clients
+        private static List<Socket> _connectedClients = new List<Socket>(); // list with all the connected clients
 
         public event EventHandler<string> DataReceived;
 
@@ -89,10 +86,7 @@ namespace Server.Connection
 
                     //Add timestamp
                     string timestamp = DateTime.Now.ToString("[HH:mm:ss]");
-                    string messageWithTimestamp = timestamp + decryptedData;
-
-                    Debug.WriteLine("(SERVER) Received from client (encrypted): " + receivedData);
-                    Debug.WriteLine("(SERVER) Received from client (decrypted): " + decryptedData);
+                    string messageWithTimestamp = $"{timestamp}: {decryptedData}";
 
                     //Triger the DataReceived event with the decrypt data
                     OnDataReceived(messageWithTimestamp);
@@ -115,11 +109,37 @@ namespace Server.Connection
                 Debug.WriteLine("(SERVER) Client Disconnected.");
             }
         }
-        public void DisplayConnectedClients()
+        public static void DisplayConnectedClients()
         {
-            foreach (Socket connection in _connectedClients)
+            try
             {
-                Console.WriteLine($"{connection}");
+                if (_connectedClients.Count == 0)
+                {
+                    Console.WriteLine("No users connected.");
+                }
+                else
+                {
+                    foreach (Socket connection in _connectedClients)
+                    {
+                        try
+                        {
+                            // Attempt to access the RemoteEndPoint property
+                            Console.WriteLine($"{connection.RemoteEndPoint}");
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            Console.WriteLine("A connection was disposed.");
+                        }
+                        catch (SocketException ex)
+                        {
+                            Console.WriteLine($"Socket error: {ex.Message}");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An unexpected error occurred while displaying connected clients: {ex.Message}");
             }
         }
 
