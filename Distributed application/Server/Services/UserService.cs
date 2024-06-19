@@ -7,9 +7,9 @@ namespace Server.Services
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public UserService(IUnitOfWork _unitOfWork)
+        public UserService(IUnitOfWork unitOfWork)
         {
-            _unitOfWork = _unitOfWork;
+            _unitOfWork = unitOfWork;
         }
 
         public User GetUser(int id)
@@ -24,7 +24,7 @@ namespace Server.Services
 
         public void CreateUser(User user)
         {
-            var existingUsers = _unitOfWork.Users.Get(user.Id);
+            var existingUsers = _unitOfWork.Users.Get(user.userID);
             if (existingUsers != null) return;
             
             _unitOfWork.Users.Add(user);
@@ -33,7 +33,7 @@ namespace Server.Services
 
         public void UpdateUser(User user)
         {
-            var existingUsers = _unitOfWork.Users.Get(user.Id);
+            var existingUsers = _unitOfWork.Users.Get(user.userID);
             if (existingUsers != null)
             {
                 //Update props

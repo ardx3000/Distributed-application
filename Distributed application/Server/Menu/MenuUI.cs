@@ -1,4 +1,5 @@
 ﻿using Server.Connection;
+using Server.Services;
 
 namespace Server.Menu
 {
@@ -6,7 +7,11 @@ namespace Server.Menu
     {
         private List<string> _generalCommands = new List<string> {"Help", "Display users", "User management"};
         private List<string> _userCommands = new List<string> { "Back", "Show user", "Show all", "Add", "Update", "Delete" };
-        
+
+        public MenuUI(IUserService userService) : base(userService)
+        {
+        }
+
         public void Options(string command)
         {
 
@@ -80,9 +85,7 @@ namespace Server.Menu
                         break;
 
                 }
-            }
-            
-
+            } 
         }
     }
 }

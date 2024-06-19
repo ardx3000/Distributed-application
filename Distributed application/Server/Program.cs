@@ -60,7 +60,7 @@ namespace Server
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddDbContext<ApplicationContext>(options =>
-                        options.UseSqlite("Data Source=DataBase.db"));
+                        options.UseSqlite("Data Source=C:\\Users\\ardx3\\Documents\\GitHub\\Distributed-application\\Distributed application\\Server\\DataBase\\DataBase.db"));
 
                     services.AddScoped<IUnitOfWork, UnitOfWork>();
                     services.AddScoped<IUserRepository, UserRepository>();
