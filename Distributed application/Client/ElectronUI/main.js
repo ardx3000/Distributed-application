@@ -36,7 +36,7 @@ app.on('activate', function () {
 });
 
 ipcMain.on('run-command', (event, arg) => {
-    const dotnet = spawn('dotnet', ['run', '--project', '../Server']);
+    const dotnet = spawn('dotnet', ['run', '--project', '../Client']);
 
     dotnet.stdout.on('data', (data) => {
         console.log(`stdout: ${data}`);
