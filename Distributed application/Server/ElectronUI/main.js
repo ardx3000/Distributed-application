@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
-const { spawn } = require('child_process');
+const net = require('net');
 
 let mainWindow;
 
@@ -10,45 +10,53 @@ function createWindow() {
         height: 600,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
-            nodeIntegration: true,
-            contextIsolation: false,
+            contextIsolation: true,
+            enableRemoteModule: false,
         },
     });
 
     mainWindow.loadFile('index.html');
-    mainWindow.on('closed', function () {
-        mainWindow = null;
-    });
 }
 
-app.on('ready', createWindow);
+app.on('ready', () => {
+    createWindow();
+    setTimeout(startNamedPipeClient, 5000); // 5 seconds delay
+});
 
-app.on('window-all-closed', function () {
+app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
     }
 });
 
-app.on('activate', function () {
-    if (mainWindow === null) {
+app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
         createWindow();
     }
 });
 
-ipcMain.on('run-command', (event, arg) => {
-    const dotnet = spawn('dotnet', ['run', '--project', '../Server']);
-
-    dotnet.stdout.on('data', (data) => {
-        console.log(`stdout: ${data}`);
-        event.reply('command-result', data.toString());
+function startNamedPipeClient() {
+    const client = net.connect({ path: '\\\\.\\pipe\\myPipe' }, () => {
+        console.log('Connected to the named pipe');
+        client.id = 'some-id';
+        client.write('Hello from Electron!'); // Send initial message to .NET Core
     });
 
-    dotnet.stderr.on('data', (data) => {
-        console.error(`stderr: ${data}`);
-        event.reply('command-error', data.toString());
+    client.on('data', (data) => {
+        console.log('Received data from named pipe:', data.toString());
+        mainWindow.webContents.send('named-pipe-data', data.toString());
     });
 
-    dotnet.on('close', (code) => {
-        console.log(`child process exited with code ${code}`);
+    client.on('end', () => {
+        console.log('Disconnected from named pipe');
     });
-});
+
+    client.on('error', (error) => {
+        console.error('Error with named pipe client:', error);
+    });
+
+    ipcMain.on('add-user', (event, user) => {
+        const userData = JSON.stringify(user);
+        client.write(userData);
+    });
+}

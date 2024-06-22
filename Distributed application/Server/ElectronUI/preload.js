@@ -1,5 +1,19 @@
 const { ipcRenderer } = require('electron');
 
+window.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('user-form');
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const role = document.getElementById('role').value;
+
+        ipcRenderer.send('add-user', { username, password, role });
+    });
+});
+
 // Event handler for messages received from named pipe (from .NET Core)
 ipcRenderer.on('named-pipe-data', (event, data) => {
     console.log('Received data from named pipe:', data);

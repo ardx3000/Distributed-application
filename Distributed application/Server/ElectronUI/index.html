@@ -1,13 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Electron App</title>
+    <title>Add User</title>
 </head>
 <body>
-    <h1>Welcome to the Electron UI</h1>
-    <button id="runCommand">Run Command</button>
-    <pre id="output"></pre>
-    <script src="renderer.js"></script>
+    <h1>Add User</h1>
+    <form id="user-form">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username"><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password"><br>
+        <label for="role">Role:</label>
+        <input type="number" id="role" name="role"><br>
+        <button type="submit">Add User</button>
+    </form>
+    <div id="output"></div>
+
+    <script>
+        // Load the preload script
+        require('./preload.js');
+    </script>
 </body>
 </html>
