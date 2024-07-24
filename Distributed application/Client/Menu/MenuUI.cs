@@ -36,7 +36,7 @@ namespace Client.Menu
             }
         }
 
-        private  void Help()
+        public void Help()
         {
             foreach (string command in _commands)
             {
