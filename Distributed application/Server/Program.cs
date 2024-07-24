@@ -50,9 +50,18 @@ namespace Server
             host.Run();
         }
 
+        //TODO update the method to parse string and act on different commands 
+
         private static void Server_DataReceived(object sender, string data)
         {
             Console.WriteLine($"Data received: {data}");
+
+            string[] parsedString = data.Split(' ');
+
+            foreach(var word in parsedString)
+            {
+                Console.WriteLine($"<{word}>");
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
