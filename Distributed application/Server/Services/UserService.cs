@@ -24,7 +24,7 @@ namespace Server.Services
 
         public void CreateUser(User user)
         {
-            var existingUsers = _unitOfWork.Users.Get(user.userID);
+            var existingUsers = _unitOfWork.Users.Get(user.UserID);
             if (existingUsers != null) return;
             
             _unitOfWork.Users.Add(user);
@@ -33,7 +33,7 @@ namespace Server.Services
 
         public void UpdateUser(User user)
         {
-            var existingUsers = _unitOfWork.Users.Get(user.userID);
+            var existingUsers = _unitOfWork.Users.Get(user.UserID);
             if (existingUsers != null)
             {
                 //Update props
@@ -41,7 +41,7 @@ namespace Server.Services
             }
         }
         public void DeleteUser(int id)
-        {
+        { 
             var user = _unitOfWork.Users.Get(id);
             if (user != null)
             {

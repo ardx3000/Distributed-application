@@ -4,6 +4,7 @@
     {
         IUserRepository Users { get; }
         ILogsRepository Logs { get; }
+        IItemRepository Items { get; }
         int Complete();
     }
 }

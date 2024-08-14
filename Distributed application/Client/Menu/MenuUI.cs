@@ -1,12 +1,13 @@
 ﻿using Client.Connection;
 using System;
 using System.ComponentModel.Design;
+using System.Xml.Serialization;
 
 namespace Client.Menu
 {
-    public class MenuUI
+    public class MenuUI : MenuLogic
     {
-        private List<string> _commands = new List<string> { "Help", "Test" };
+        private List<string> _generalCommands = new List<string> { "Help", "Test", "Add data" };
         private SocketClient _socketClient;
 
         public MenuUI(SocketClient socketClient)
@@ -14,9 +15,9 @@ namespace Client.Menu
             _socketClient = socketClient;
         }
 
-        public  void Options(string command)
+        public void Options(string command)
         {
-            int index = _commands.IndexOf(command);
+            int index = FindCommandIndex(_generalCommands, command);
 
             if (index != -1)
             {
@@ -26,28 +27,42 @@ namespace Client.Menu
                         Help();
                         break;
                     case 1:
-                        testSend();
+                        TestSend();
+                        break;
+                    case 2:
+                        AddData();
                         break;
                 }
             }
             else
             {
-                Console.WriteLine($"Invalid command use {_commands.ElementAt(0)} !");
+                Console.WriteLine($"Invalid command use {_generalCommands.ElementAt(0)} !");
             }
         }
 
         public void Help()
         {
-            foreach (string command in _commands)
+            for (int i = 0; i < _generalCommands.Count; i++)
             {
-                Console.WriteLine($"{command},");
+                Console.WriteLine($"{i + 1}. {_generalCommands[i]}");
             }
         }
-        private void testSend()
+
+        private void TestSend()
         {
             Console.WriteLine("Enter the massage to be sent: ");
             string data =  Console.ReadLine();
             _socketClient.Send(data);
         }
+
+        private int FindCommandIndex(List<string> commands, string input)
+        {
+            if (int.TryParse(input, out int number) && number > 0 && number <= commands.Count) return number - 1;
+
+            return commands.FindIndex(cmd => cmd.StartsWith(input, StringComparison.OrdinalIgnoreCase));
+        }
+        //TODO create a function where the user can login 
+
+
     }
 }

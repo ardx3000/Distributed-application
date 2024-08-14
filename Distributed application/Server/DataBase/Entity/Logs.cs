@@ -2,10 +2,13 @@
 {
     public class Logs
     {
-        public int Id { get; set; }
-        public string UserID { get; set; }
-        public DateTime dateTime { get; set; }
+        public int Id { get; set; }//Primary key
+        public int UserID { get; set; }//Forign key
+        public DateTime DateTime { get; set; }
         public string Command { get; set; }
-        public string result { get; set; }
+        public string Result { get; set; }
+
+        // Navigation property
+        public User User { get; set; }
     }
 }

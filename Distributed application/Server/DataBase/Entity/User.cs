@@ -2,7 +2,7 @@
 {
     public class User
     {
-        public int userID {  get; set; }
+        public int UserID {  get; set; } //Primary key
         public string Username { get; set; }
         public string Password { get; set; }
         private int _role;
@@ -22,5 +22,8 @@
                 }
             }
         }
+        public ICollection<Items> Items { get; set; }
+        public ICollection<Logs> Logs { get; set; }
     }
+
 }

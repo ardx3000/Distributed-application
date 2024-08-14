@@ -1,6 +1,7 @@
 ﻿using Server.Connection;
 using Server.DataBase.Entity;
 using Server.Services;
+using Server.Utils;
 namespace Server.Menu
 {
     public class MenuLogic
@@ -9,10 +10,12 @@ namespace Server.Menu
         //TODO Update the functions that interact withb the db
 
         private readonly IUserService _userService;
+        private readonly IItemService _itemService;
 
-        public MenuLogic(IUserService userService)
+        public MenuLogic(IUserService userService, IItemService itemService)
         {
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            _itemService = itemService ?? throw new ArgumentNullException(nameof(itemService));
         }
 
         protected void DisplayConnectedUsers()
@@ -26,29 +29,9 @@ namespace Server.Menu
             string username = Console.ReadLine();
 
             Console.WriteLine("Enter password: ");
-            string password = Console.ReadLine();
-            string setPassword;
+            string password = HashingUtility.HashString(Console.ReadLine());
 
             //TODO create a method to confirm password,
-            //TODO create a method that hashes the password.
-          /*  bool confirmPasswordind = false;
-            int tries = 0;
-            while (confirmPasswordind == false)
-            {
-                Console.WriteLine("Confirm password");
-                string confirmPassword = Console.ReadLine();
-                if (confirmPassword == password)
-                {
-                    setPassword = password;
-                    confirmPasswordind = true;
-                }
-                else
-                {
-                    tries++;
-                    Console.WriteLine("Incorect password please try again");
-                    if (tries == 5) Console.WriteLine("To many attempts! "); return;
-                }
-            }*/
 
             Console.WriteLine("Enter user's role using a number from 0 to 3: ");
             int role = Convert.ToInt32(Console.ReadLine());
@@ -71,7 +54,7 @@ namespace Server.Menu
             var user = _userService.GetUser(userID);
             if (user != null)
             {
-                Console.WriteLine($"User ID: {user.userID}| Username: {user.Username}| Role: {user.Role}");
+                Console.WriteLine($"User ID: {user.UserID}| Username: {user.Username}| Role: {user.Role}");
 
             }
             else
@@ -86,7 +69,7 @@ namespace Server.Menu
             var users = _userService.GetAllUsers();
             foreach (var user in users)
             {
-                Console.WriteLine($"User ID: {user.userID}| Username: {user.Username}| Role: {user.Role}");
+                Console.WriteLine($"User ID: {user.UserID}| Username: {user.Username}| Role: {user.Role}");
             }
 
             return;
@@ -99,6 +82,25 @@ namespace Server.Menu
             _userService.DeleteUser(userID);
             Console.WriteLine("USer deleted succesfullt! ");
 
+            return;
+        }
+
+        protected void AddItem()
+        {
+            Console.WriteLine("Enter Item name");
+            string itemName = Console.ReadLine();
+
+            Console.WriteLine("Enter Item quantity");
+            int quantity = Convert.ToInt32(Console.ReadLine());
+
+            Console.WriteLine("Enter price per unit");
+            decimal pricePerUnit = Convert.ToDecimal(Console.ReadLine());
+
+            var newItem = new Items { Name = itemName, Quantity = quantity, PricePerUnit = pricePerUnit, UserID = 2 /* User id is a hard coded placehorder
+                                                                                                                     This will be updated to take the actual logged in user*/ };
+            _itemService.AddOrUpdateItem(newItem);
+
+            Console.WriteLine($"Item {itemName} has been added succesfully! ");
             return;
         }
     }

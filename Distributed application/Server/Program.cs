@@ -74,9 +74,11 @@ namespace Server
                     services.AddScoped<IUnitOfWork, UnitOfWork>();
                     services.AddScoped<IUserRepository, UserRepository>();
                     services.AddScoped<ILogsRepository, LogsRepository>();
+                    services.AddScoped<IItemRepository, ItemRepository>();
 
                     services.AddScoped<IUserService, UserService>();
                     services.AddScoped<ILogsService, LogsService>();
+                    services.AddScoped<IItemService, ItemService>();
 
                     
                     services.AddSingleton<MenuUI>();
