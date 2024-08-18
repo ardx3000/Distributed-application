@@ -64,21 +64,7 @@ namespace Server
              * for example 1 means add item, then we access the AddItem in menuLogic we pass the whole data, to AddItem
              * and we parse the data inside of that method.
              */
-            string pattern = @"Item_name:\s*(?<item_name>[^,]+),\s*Quantity:\s*(?<quantity>\d+),\s*Price:\s*(?<price>\d+)";
-            Match match = Regex.Match(data, pattern);
-            if (match.Success)
-            {
-                string Item_name = match.Groups["item_name"].Value;
-                string Quantity = match.Groups["quantity"].Value;
-                string Price = match.Groups["price"].Value;
-
-                int quantity = Convert.ToInt32(Quantity);
-                decimal price = Convert.ToDecimal(Price);
-
-                _menu.AddItem(Item_name, quantity, price);
-               
-                Console.WriteLine(Item_name + Quantity + Price);
-            };
+            
 
         }
 

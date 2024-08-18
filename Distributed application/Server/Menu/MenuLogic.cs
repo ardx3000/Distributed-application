@@ -2,6 +2,7 @@
 using Server.DataBase.Entity;
 using Server.Services;
 using Server.Utils;
+using System.Text.RegularExpressions;
 namespace Server.Menu
 {
     //TODO Refactor the name from MenuLogic to Logic since the class is not binded only to menu
@@ -120,6 +121,26 @@ namespace Server.Menu
             _itemService.AddOrUpdateItem(newItem);
 
             Console.WriteLine($"Item {itemName} has been added successfully!");
-        } 
+        }
+
+        public void DataParseAndAction(string data)
+        {
+            string pattern = @"Item_name:\s*(?<item_name>[^,]+),\s*Quantity:\s*(?<quantity>\d+),\s*Price:\s*(?<price>\d+)";
+            
+            Match match = Regex.Match(data, pattern);
+            if (match.Success)
+            {
+                string Item_name = match.Groups["item_name"].Value;
+                string Quantity = match.Groups["quantity"].Value;
+                string Price = match.Groups["price"].Value;
+
+                int quantity = Convert.ToInt32(Quantity);
+                decimal price = Convert.ToDecimal(Price);
+
+                AddItem(Item_name, quantity, price);
+
+                Console.WriteLine(Item_name + Quantity + Price);
+            };
+        }
     }
 }
