@@ -24,8 +24,17 @@ namespace Client.Menu
 
             Console.WriteLine("Would you like to procceed with this data or you woul like to start again");
 
-            //int choice = Convert.ToInt32(Console.ReadLine());
-
+            int choice = Convert.ToInt32(Console.ReadLine());
+            if (choice != 1)
+            {
+                return;
+            }
+            else
+            {
+                string finalData = "Item_name: " + item_name + "," + "Quantity: " + quantity + "," + "Price: " + price;
+                Console.WriteLine(finalData);
+            }
+            
             //TODO create a condition that will confirm the data and send it to the server or the user can repeat the process.
 
         }

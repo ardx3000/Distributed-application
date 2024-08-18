@@ -4,6 +4,7 @@ using Server.Services;
 using Server.Utils;
 namespace Server.Menu
 {
+    //TODO Refactor the name from MenuLogic to Logic since the class is not binded only to menu
     public class MenuLogic
     {
 
@@ -85,6 +86,7 @@ namespace Server.Menu
             return;
         }
 
+        //Protected method userd by the server to add items for testing,
         protected void AddItem()
         {
             Console.WriteLine("Enter Item name");
@@ -96,12 +98,28 @@ namespace Server.Menu
             Console.WriteLine("Enter price per unit");
             decimal pricePerUnit = Convert.ToDecimal(Console.ReadLine());
 
-            var newItem = new Items { Name = itemName, Quantity = quantity, PricePerUnit = pricePerUnit, UserID = 2 /* User id is a hard coded placehorder
+            var newItem = new Items { Name = itemName, Quantity = quantity, PricePerUnit = pricePerUnit, UserID = 1 /* User id is a hard coded placehorder
                                                                                                                      This will be updated to take the actual logged in user*/ };
             _itemService.AddOrUpdateItem(newItem);
 
             Console.WriteLine($"Item {itemName} has been added succesfully! ");
             return;
         }
+
+        //Overload method used whjen data is received from the client.
+        public void AddItem(string itemName, int quantity, decimal pricePerUnit)
+        {
+            var newItem = new Items
+            {
+                Name = itemName,
+                Quantity = quantity,
+                PricePerUnit = pricePerUnit,
+                UserID = 1
+            };
+
+            _itemService.AddOrUpdateItem(newItem);
+
+            Console.WriteLine($"Item {itemName} has been added successfully!");
+        } 
     }
 }

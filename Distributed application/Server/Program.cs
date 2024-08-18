@@ -1,16 +1,18 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Server.Connection;
-using Server.Menu;
-using Microsoft.EntityFrameworkCore;
 using Server.DataBase;
 using Server.DataBase.Repository;
+using Server.Menu;
 using Server.Services;
+using System.Text.RegularExpressions;
 
 namespace Server
 {
     class Program
     {
+        //TODO Create a way for the client to login and have persistance.
         private static MenuUI _menu;
 
         static void Main(string[] args)
@@ -56,12 +58,28 @@ namespace Server
         {
             Console.WriteLine($"Data received: {data}");
 
-            string[] parsedString = data.Split(' ');
-
-            foreach(var word in parsedString)
+            //TODO Create a way to check what is the client command , and move the regex funtion in a different method.
+            /*
+             * create a switch case where it checks a signiture of the command sent by the server
+             * for example 1 means add item, then we access the AddItem in menuLogic we pass the whole data, to AddItem
+             * and we parse the data inside of that method.
+             */
+            string pattern = @"Item_name:\s*(?<item_name>[^,]+),\s*Quantity:\s*(?<quantity>\d+),\s*Price:\s*(?<price>\d+)";
+            Match match = Regex.Match(data, pattern);
+            if (match.Success)
             {
-                Console.WriteLine($"<{word}>");
-            }
+                string Item_name = match.Groups["item_name"].Value;
+                string Quantity = match.Groups["quantity"].Value;
+                string Price = match.Groups["price"].Value;
+
+                int quantity = Convert.ToInt32(Quantity);
+                decimal price = Convert.ToDecimal(Price);
+
+                _menu.AddItem(Item_name, quantity, price);
+               
+                Console.WriteLine(Item_name + Quantity + Price);
+            };
+
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
