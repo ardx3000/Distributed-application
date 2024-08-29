@@ -10,9 +10,8 @@ namespace Client.Menu
         private List<string> _generalCommands = new List<string> { "Help", "Test", "Add data" };
         private SocketClient _socketClient;
 
-        public MenuUI(SocketClient socketClient)
+        public MenuUI(SocketClient socketClient) : base(socketClient)
         {
-            _socketClient = socketClient;
         }
 
         public void Options(string command)
@@ -48,12 +47,7 @@ namespace Client.Menu
             }
         }
 
-        private void TestSend()
-        {
-            Console.WriteLine("Enter the massage to be sent: ");
-            string data =  Console.ReadLine();
-            _socketClient.Send(data);
-        }
+
 
         private int FindCommandIndex(List<string> commands, string input)
         {

@@ -1,11 +1,13 @@
 ﻿using Server.DataBase.Entity;
 using Server.DataBase.Repository;
+using Server.Utils;
 
 namespace Server.Services
 {
     public class UserService : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly Dictionary<string, int> _session;
 
         public UserService(IUnitOfWork unitOfWork)
         {
@@ -26,7 +28,8 @@ namespace Server.Services
         {
             var existingUsers = _unitOfWork.Users.Get(user.UserID);
             if (existingUsers != null) return;
-            
+
+            user.Password = HashingUtility.HashString(user.Password); 
             _unitOfWork.Users.Add(user);
             _unitOfWork.Complete();
         }
@@ -47,6 +50,41 @@ namespace Server.Services
             {
                 _unitOfWork.Users.Delete(user);
                 _unitOfWork.Complete();
+            }
+        }
+
+        public User GetUserByUsername(string username)
+        {
+            return _unitOfWork.Users.Find(u => u.Username == username).SingleOrDefault();
+        }
+
+        public string Login(string username, string password)
+        {
+            var user = GetUserByUsername(username);
+            if (user == null) return null;
+
+            //Password should be sent as a hash from the client
+            if (user.Password == password)
+            {
+                //Generate a session token
+                string sessionToken = Guid.NewGuid().ToString();
+                _session[sessionToken] = user.UserID;
+                return sessionToken; // Return the session token to the client
+
+            }
+            return null; //Unable to login
+        }
+
+        public bool IsAuthenticated(string token)
+        {
+            return _session.ContainsKey(token);
+        }
+
+        public void Logout(string token)
+        {
+            if (_session.ContainsKey(token))
+            {
+                _session.Remove(token);
             }
         }
     }

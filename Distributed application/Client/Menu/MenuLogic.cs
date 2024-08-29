@@ -1,10 +1,27 @@
 ﻿
+using Client.Connection;
+
 namespace Client.Menu
 {
     public class MenuLogic 
     {
+        protected SocketClient _socketClient; // Protected field to store the socket client
+
+        public MenuLogic(SocketClient socketClient)
+        {
+            _socketClient = socketClient; // Initialize the socket client
+        }
+
+        protected void TestSend()
+        {
+            Console.WriteLine("Enter the massage to be sent: ");
+            string data = Console.ReadLine();
+            _socketClient.Send(data);
+        }
+
         protected void AddData()
         {
+            int commandType = 01; //This is the sign of add command
             Console.WriteLine("Fill the form with the data values.");
             Console.WriteLine("Those are the data types: item_name: , quantity:, price_per_unit:");
 
@@ -15,15 +32,14 @@ namespace Client.Menu
             int quantity = Convert.ToInt32(Console.ReadLine());
 
             Console.WriteLine("Add the price of the each unit");
-            double price = Convert.ToDouble(Console.ReadLine());
+            decimal price = Convert.ToDecimal(Console.ReadLine());
 
-            double total = price * quantity;
+            decimal total = price * quantity;
             Console.WriteLine($"item_name: {item_name}| quantity: {quantity}| price: £{price}| total: £{total}");
 
             Console.WriteLine();
 
-            Console.WriteLine("Would you like to procceed with this data or you woul like to start again");
-
+            Console.WriteLine("Type 1 if you would like to proceed with the current data or type any other number if you would like to restart");
             int choice = Convert.ToInt32(Console.ReadLine());
             if (choice != 1)
             {
@@ -31,12 +47,15 @@ namespace Client.Menu
             }
             else
             {
-                string finalData = "Item_name: " + item_name + "," + "Quantity: " + quantity + "," + "Price: " + price;
-                Console.WriteLine(finalData);
-            }
-            
-            //TODO create a condition that will confirm the data and send it to the server or the user can repeat the process.
+               _socketClient.Send(GetFinalData(commandType, item_name, quantity, price));
+                           
+            }   
+        }
 
+        private string GetFinalData(int commandType, string item_name, int quantity, decimal pricePerUnit)
+        {
+            string finalData = $"{commandType.ToString()}, {item_name}, {quantity.ToString()}, {pricePerUnit.ToString()}";
+            return finalData;
         }
     }
 }

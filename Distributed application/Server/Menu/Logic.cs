@@ -1,12 +1,11 @@
 ﻿using Server.Connection;
 using Server.DataBase.Entity;
 using Server.Services;
-using Server.Utils;
 using System.Text.RegularExpressions;
+
 namespace Server.Menu
 {
-    //TODO Refactor the name from MenuLogic to Logic since the class is not binded only to menu
-    public class MenuLogic
+    public class Logic
     {
 
         //TODO Update the functions that interact withb the db
@@ -14,7 +13,7 @@ namespace Server.Menu
         private readonly IUserService _userService;
         private readonly IItemService _itemService;
 
-        public MenuLogic(IUserService userService, IItemService itemService)
+        public Logic(IUserService userService, IItemService itemService)
         {
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _itemService = itemService ?? throw new ArgumentNullException(nameof(itemService));
@@ -31,7 +30,7 @@ namespace Server.Menu
             string username = Console.ReadLine();
 
             Console.WriteLine("Enter password: ");
-            string password = HashingUtility.HashString(Console.ReadLine());
+            string password = Console.ReadLine();
 
             //TODO create a method to confirm password,
 
@@ -115,7 +114,7 @@ namespace Server.Menu
                 Name = itemName,
                 Quantity = quantity,
                 PricePerUnit = pricePerUnit,
-                UserID = 1
+                UserID = 1 //Hard cocerd for the moment 
             };
 
             _itemService.AddOrUpdateItem(newItem);

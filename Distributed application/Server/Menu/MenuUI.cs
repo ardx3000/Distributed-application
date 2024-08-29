@@ -3,7 +3,7 @@ using Server.Services;
 
 namespace Server.Menu
 {
-    public class MenuUI : MenuLogic
+    public class MenuUI : Logic
     {
         private List<string> _generalCommands = new List<string> {"Help", "Display users", "User management", "Item management" };
         private List<string> _userCommands = new List<string> { "Back", "Show user", "Show all", "Add", "Update", "Delete" };
