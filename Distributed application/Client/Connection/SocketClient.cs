@@ -94,30 +94,7 @@ namespace Client.Connection
 
 
         }
-        /*
-        //modified to not block calls
-       public void ReceiveData()
-        {
-            try
-            {
-                while (true)
-                {
-                    byte[] buffer = new byte[1024];
-                    int bytesReceived = _socketClient.Receive(buffer);
-                    string encodedResponse = Encoding.ASCII.GetString(buffer, 0, bytesReceived); // Convert the received bytes to a string
-                    byte[] encryptedResponse = Convert.FromBase64String(encodedResponse); // Convert the string to byte array
-                    string decryptedResponse = _encryption.DecryptBytes(encryptedResponse); // Decrypt the response
 
-                    // Raise the DataReceived event with the decrypted response
-                    OnDataReceived(decryptedResponse);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Error receiving data:" + ex.Message);
-            }
-        }
-        */
         public void Close()
         {
             _socketClient.Shutdown(SocketShutdown.Both);

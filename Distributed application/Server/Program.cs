@@ -4,7 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Server.Connection;
 using Server.DataBase;
 using Server.DataBase.Repository;
-using Server.Menu;
+using Server.Logic;
 using Server.Services;
 using System.Text.RegularExpressions;
 
@@ -44,7 +44,7 @@ namespace Server
                 {
                     Console.WriteLine("-------------------------------------------------------------");
                     string userInput = Console.ReadLine();
-                    _menu.Options(userInput);
+                    _menu.LocalOptions(userInput);
                 }
             }
 
@@ -58,15 +58,8 @@ namespace Server
         {
             Console.WriteLine($"Data received: {data}");
 
-            //TODO Create a way to check what is the client command , and move the regex funtion in a different method.
-            /*
-             * create a switch case where it checks a signiture of the command sent by the server
-             * for example 1 means add item, then we access the AddItem in menuLogic we pass the whole data, to AddItem
-             * and we parse the data inside of that method.
-             */
-
+            _menu.ServerOptions(data);
             
-
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

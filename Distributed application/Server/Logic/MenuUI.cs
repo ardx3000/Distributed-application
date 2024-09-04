@@ -1,22 +1,48 @@
 ﻿using Server.Connection;
 using Server.Services;
+using System.ComponentModel;
 
-namespace Server.Menu
+namespace Server.Logic
 {
-    public class MenuUI : Logic
+    public class MenuUI
     {
-        private List<string> _generalCommands = new List<string> {"Help", "Display users", "User management", "Item management" };
+        private List<string> _generalCommands = new List<string> {"Help","Login" , "Item management" };
+        private List<string> _localCommands = new List<string> { "Help", "Display users", "User management", };
         private List<string> _userCommands = new List<string> { "Back", "Show user", "Show all", "Add", "Update", "Delete" };
         private List<string> _itemCommands = new List<string> { "Add" };
 
-        public MenuUI(IUserService userService, IItemService itemService) : base(userService, itemService)
-        {
-        }
+        private new LoginManagementLogic _loginLogic;
+        private new LocalLogic _localLogic;
+        private new ItemsManagementLogic _itemsManagementLogic;
 
-        public void Options(string command)
+        public void ServerOptions(string data)
         {
+            //Receive full data spaced by ' '
+            //create a string that takes the command name and pass it Find... and it remove the first thing
+            //take the command param from the string and pass the rest of the data to the appropiate case where it will be further proccesed by the function
+
+            string[] parts = data.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 0) return;
+
+            string command = parts[0];
+            string restOfData = string.Join(" ", parts, 1, parts.Length - 1);
 
             int index = FindCommandIndex(_generalCommands, command);
+
+            if (index == -1)
+            {
+                switch (index)
+                {
+                    case 0:
+                        _loginLogic.Login(data);
+                        break;
+                }
+            }
+        }
+        public void LocalOptions(string command)
+        {
+
+            int index = FindCommandIndex(_localCommands, command);
 
             if (index != -1)
             {
@@ -26,13 +52,10 @@ namespace Server.Menu
                         Help();
                         break;
                     case 1:
-                        DisplayConnectedUsers();
+                        _localLogic.DisplayConnectedUsers();
                         break;
                     case 2:
                         UserManagement();
-                        break;
-                    case 3:
-                        ItemManagement();
                         break;
                 }
             }
@@ -51,7 +74,7 @@ namespace Server.Menu
             }
             
         }
-        protected void ItemManagement()
+        protected void ItemManagement(string data)
         {
 
             Console.WriteLine("Please chose one of the following commands: ");
@@ -67,7 +90,7 @@ namespace Server.Menu
                 switch (index)
                 {
                     case 0:
-                        AddItem();
+                        _itemsManagementLogic.AddItem(data);
                         break;
                 }
             }
@@ -91,19 +114,19 @@ namespace Server.Menu
                     case 0:
                         return;
                     case 1:
-                        GetUser();
+                        _localLogic.GetUser();
                         break;
                     case 2:
-                        GetAllUsers();
+                        _localLogic.GetAllUsers();
                         break;
                     case 3:
-                        AddUser();
+                        _localLogic.AddUser();
                         break;
                     case 4:
-                        UpdateUser();
+                        _localLogic.UpdateUser();
                         break;
                     case 5:
-                        DeleteUser();
+                        _localLogic.DeleteUser();
                         break;
 
                 }

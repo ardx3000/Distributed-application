@@ -1,30 +1,21 @@
-﻿using Server.Connection;
+﻿
+using Server.Connection;
 using Server.DataBase.Entity;
 using Server.Services;
-using System.Text.RegularExpressions;
 
-namespace Server.Menu
+namespace Server.Logic
 {
-    public class Logic
+    public class LocalLogic : PLogic
     {
-
-        //TODO Update the functions that interact withb the db
-
-        private readonly IUserService _userService;
-        private readonly IItemService _itemService;
-
-        public Logic(IUserService userService, IItemService itemService)
+        public LocalLogic(IUserService userService, IItemService itemService) : base(userService, itemService)
         {
-            _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            _itemService = itemService ?? throw new ArgumentNullException(nameof(itemService));
         }
 
-        protected void DisplayConnectedUsers()
+        public void DisplayConnectedUsers()
         {
             SocketServer.DisplayConnectedClients();
         }
-
-        protected void AddUser()
+        public void AddUser()
         {
             Console.WriteLine("Enter user name: ");
             string username = Console.ReadLine();
@@ -43,11 +34,11 @@ namespace Server.Menu
             Console.WriteLine($"User {username} has been created succesfully! ");
             return;
         }
-        protected void UpdateUser()
+        public void UpdateUser()
         {
             return;
         }
-        protected void GetUser()
+        public void GetUser()
         {
             Console.WriteLine("Ente user ID: ");
             int userID = Convert.ToInt32(Console.ReadLine());
@@ -65,7 +56,7 @@ namespace Server.Menu
 
             return;
         }
-        protected void GetAllUsers()
+        public void GetAllUsers()
         {
             var users = _userService.GetAllUsers();
             foreach (var user in users)
@@ -75,7 +66,7 @@ namespace Server.Menu
 
             return;
         }
-        protected void DeleteUser()
+        public void DeleteUser()
         {
             Console.WriteLine("Enter user ID to be deleted: ");
             int userID = Convert.ToInt32(Console.ReadLine());
@@ -86,8 +77,7 @@ namespace Server.Menu
             return;
         }
 
-        //Protected method userd by the server to add items for testing,
-        protected void AddItem()
+        public void TestAddItem()
         {
             Console.WriteLine("Enter Item name");
             string itemName = Console.ReadLine();
@@ -98,48 +88,19 @@ namespace Server.Menu
             Console.WriteLine("Enter price per unit");
             decimal pricePerUnit = Convert.ToDecimal(Console.ReadLine());
 
-            var newItem = new Items { Name = itemName, Quantity = quantity, PricePerUnit = pricePerUnit, UserID = 1 /* User id is a hard coded placehorder
-                                                                                                                     This will be updated to take the actual logged in user*/ };
-            _itemService.AddOrUpdateItem(newItem);
-
-            Console.WriteLine($"Item {itemName} has been added succesfully! ");
-            return;
-        }
-
-        //Overload method used whjen data is received from the client.
-        public void AddItem(string itemName, int quantity, decimal pricePerUnit)
-        {
             var newItem = new Items
             {
                 Name = itemName,
                 Quantity = quantity,
                 PricePerUnit = pricePerUnit,
-                UserID = 1 //Hard cocerd for the moment 
+                UserID = 1 /* User id is a hard coded placehorder
+                                                                                                                     This will be updated to take the actual logged in user*/
             };
-
             _itemService.AddOrUpdateItem(newItem);
 
-            Console.WriteLine($"Item {itemName} has been added successfully!");
-        }
-
-        public void DataParseAndAction(string data)
-        {
-            string pattern = @"Item_name:\s*(?<item_name>[^,]+),\s*Quantity:\s*(?<quantity>\d+),\s*Price:\s*(?<price>\d+)";
-            
-            Match match = Regex.Match(data, pattern);
-            if (match.Success)
-            {
-                string Item_name = match.Groups["item_name"].Value;
-                string Quantity = match.Groups["quantity"].Value;
-                string Price = match.Groups["price"].Value;
-
-                int quantity = Convert.ToInt32(Quantity);
-                decimal price = Convert.ToDecimal(Price);
-
-                AddItem(Item_name, quantity, price);
-
-                Console.WriteLine(Item_name + Quantity + Price);
-            };
+            Console.WriteLine($"Item {itemName} has been added succesfully! ");
+            return;
+            }
         }
     }
-}
+

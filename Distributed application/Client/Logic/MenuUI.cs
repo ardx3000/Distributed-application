@@ -1,4 +1,5 @@
 ﻿using Client.Connection;
+using Client.Services;
 using System;
 using System.ComponentModel.Design;
 using System.Xml.Serialization;
@@ -7,10 +8,10 @@ namespace Client.Menu
 {
     public class MenuUI : MenuLogic
     {
-        private List<string> _generalCommands = new List<string> { "Help", "Test", "Add data" };
+        private List<string> _generalCommands = new List<string> { "Login", "Help", "Test", "Add data" };
         private SocketClient _socketClient;
 
-        public MenuUI(SocketClient socketClient) : base(socketClient)
+        public MenuUI(SocketClient socketClient, LoginService loginService) : base(socketClient, loginService)
         {
         }
 
@@ -23,12 +24,15 @@ namespace Client.Menu
                 switch(index)
                 {
                     case 0:
-                        Help();
+                        Login();
                         break;
                     case 1:
-                        TestSend();
+                        Help();
                         break;
                     case 2:
+                        TestSend();
+                        break;
+                    case 3:
                         AddData();
                         break;
                 }

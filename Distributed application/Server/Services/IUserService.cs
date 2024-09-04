@@ -9,7 +9,7 @@ namespace Server.Services
         void CreateUser(User user);
         void UpdateUser(User user);
         void DeleteUser(int Id);
-        public string Login(string username, string password);
+        public string Login(string data);
         public User GetUserByUsername(string username);
         public bool IsAuthenticated(string token);
         public void Logout(string token);

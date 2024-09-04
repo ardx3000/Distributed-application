@@ -58,8 +58,15 @@ namespace Server.Services
             return _unitOfWork.Users.Find(u => u.Username == username).SingleOrDefault();
         }
 
-        public string Login(string username, string password)
+        public string Login(string data)
+
         {
+            //No needto check if the string is empty since if it empty it will not pass the check in the menu option.
+            string[] parts = data.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string username = parts[0];
+            string password = parts[1];
+
+            //get whole data in a chunk split it in username and password vars 
             var user = GetUserByUsername(username);
             if (user == null) return null;
 

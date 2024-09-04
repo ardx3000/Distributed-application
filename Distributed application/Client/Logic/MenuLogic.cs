@@ -1,19 +1,54 @@
 ﻿
 using Client.Connection;
+using Client.Services;
 
 namespace Client.Menu
 {
     public class MenuLogic 
     {
         protected SocketClient _socketClient; // Protected field to store the socket client
+        protected readonly LoginService _loginService;
 
-        public MenuLogic(SocketClient socketClient)
+        public MenuLogic(SocketClient socketClient, LoginService loginService)
         {
             _socketClient = socketClient; // Initialize the socket client
+            _loginService = loginService;
+        }
+
+
+
+        protected void Login()
+        {
+            if (_loginService.IsLoggedIn)
+            {
+                Console.WriteLine("You are already logged in use Help command");
+                return;
+            }
+
+            Console.WriteLine("Enter your username: ");
+            string username = Console.ReadLine();
+            Console.WriteLine("Enter your password");
+            string password = Console.ReadLine();
+
+            bool success = _loginService.Login(username, password);
+            if (success)
+            {
+                Console.WriteLine("Login successfull please use Help command to se the available options ! ");
+            }
+            else
+            {
+                Console.WriteLine("Login failed. POlease try again ! ");
+            }
         }
 
         protected void TestSend()
         {
+            if (!_loginService.IsLoggedIn) // Check if the user is logged in
+            {
+                Console.WriteLine("You must be logged in to send a message.");
+                return;
+            }
+
             Console.WriteLine("Enter the massage to be sent: ");
             string data = Console.ReadLine();
             _socketClient.Send(data);
@@ -21,6 +56,12 @@ namespace Client.Menu
 
         protected void AddData()
         {
+            if (!_loginService.IsLoggedIn) // Check if the user is logged in
+            {
+                Console.WriteLine("You must be logged in to add data.");
+                return;
+            }
+
             int commandType = 01; //This is the sign of add command
             Console.WriteLine("Fill the form with the data values.");
             Console.WriteLine("Those are the data types: item_name: , quantity:, price_per_unit:");
