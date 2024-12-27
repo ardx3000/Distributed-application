@@ -10,7 +10,9 @@ namespace Server.Logic
 
         public void Login(string data)
         {
+            Console.WriteLine("data in login"+data);
             _userService.Login(data);
+
         }
     }
 }

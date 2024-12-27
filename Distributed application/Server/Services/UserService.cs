@@ -12,6 +12,7 @@ namespace Server.Services
         public UserService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+            _session = new Dictionary<string, int>();
         }
 
         public User GetUser(int id)
@@ -59,7 +60,6 @@ namespace Server.Services
         }
 
         public string Login(string data)
-
         {
             //No needto check if the string is empty since if it empty it will not pass the check in the menu option.
             string[] parts = data.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);

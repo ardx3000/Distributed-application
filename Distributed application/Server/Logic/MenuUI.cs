@@ -6,35 +6,42 @@ namespace Server.Logic
 {
     public class MenuUI
     {
-        private List<string> _generalCommands = new List<string> {"Help","Login" , "Item management" };
+        private List<string> _generalCommands = new List<string> {"Login" , "Item management" };
         private List<string> _localCommands = new List<string> { "Help", "Display users", "User management", };
         private List<string> _userCommands = new List<string> { "Back", "Show user", "Show all", "Add", "Update", "Delete" };
         private List<string> _itemCommands = new List<string> { "Add" };
 
-        private new LoginManagementLogic _loginLogic;
-        private new LocalLogic _localLogic;
-        private new ItemsManagementLogic _itemsManagementLogic;
+        private LoginManagementLogic _loginLogic;
+        private LocalLogic _localLogic;
+        private ItemsManagementLogic _itemsManagementLogic;
+        public MenuUI(LoginManagementLogic loginLogic, LocalLogic localLogic, ItemsManagementLogic itemsManagementLogic)
+        {
+            _loginLogic = loginLogic ?? throw new ArgumentNullException(nameof(loginLogic));
+            _localLogic = localLogic ?? throw new ArgumentNullException(nameof(localLogic));
+            _itemsManagementLogic = itemsManagementLogic ?? throw new ArgumentNullException(nameof(itemsManagementLogic));
+        }
 
         public void ServerOptions(string data)
         {
             //Receive full data spaced by ' '
             //create a string that takes the command name and pass it Find... and it remove the first thing
             //take the command param from the string and pass the rest of the data to the appropiate case where it will be further proccesed by the function
-
+            Console.WriteLine(data);
             string[] parts = data.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             if (parts.Length == 0) return;
 
             string command = parts[0];
+            Console.WriteLine(command+"is ther space");
             string restOfData = string.Join(" ", parts, 1, parts.Length - 1);
 
             int index = FindCommandIndex(_generalCommands, command);
 
-            if (index == -1)
+            if (index != -1)
             {
                 switch (index)
                 {
                     case 0:
-                        _loginLogic.Login(data);
+                        _loginLogic.Login(restOfData);
                         break;
                 }
             }
@@ -68,9 +75,9 @@ namespace Server.Logic
         public void Help()
         {
             
-            for (int i = 0; i < _generalCommands.Count; i++)
+            for (int i = 0; i < _localCommands.Count; i++)
             {
-                Console.WriteLine($"{i + 1}. {_generalCommands[i]}");
+                Console.WriteLine($"{i + 1}. {_localCommands[i]}");
             }
             
         }

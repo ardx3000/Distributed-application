@@ -18,7 +18,5 @@ namespace Server.Logic
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
             _itemService = itemService ?? throw new ArgumentNullException(nameof(itemService));
         }
-
-
     }
 }

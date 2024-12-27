@@ -78,7 +78,10 @@ namespace Server
                     services.AddScoped<ILogsService, LogsService>();
                     services.AddScoped<IItemService, ItemService>();
 
-                    
+                    services.AddScoped<LoginManagementLogic>();
+                    services.AddScoped<LocalLogic>();
+                    services.AddScoped<ItemsManagementLogic>();
+
                     services.AddSingleton<MenuUI>();
                 });
     }

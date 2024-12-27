@@ -16,6 +16,7 @@ namespace Server.Connection
         public event EventHandler<string> DataReceived;
 
 
+        //Add a send method to send data to the cleint -_- forgot
         public SocketServer(int port, byte[] key, byte[] iv)
         {
             _listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -89,7 +90,7 @@ namespace Server.Connection
                     string messageWithTimestamp = $"{timestamp}: {decryptedData}";
 
                     //Triger the DataReceived event with the decrypt data
-                    OnDataReceived(messageWithTimestamp);
+                    OnDataReceived(decryptedData);
 
                     // Process the decrypted data as needed
                     // Example: echo back the decrypted message
@@ -107,6 +108,21 @@ namespace Server.Connection
                 clientSocket.Shutdown(SocketShutdown.Both);
                 clientSocket.Close();
                 Debug.WriteLine("(SERVER) Client Disconnected.");
+            }
+        }
+        public void SendToClient(Socket clientSocket, string message)
+        {
+            byte[] responseData = _encryption.EncryptString(message);
+            string encryptedResponse = Convert.ToBase64String(responseData);
+            byte[] byteData = Encoding.ASCII.GetBytes(encryptedResponse);
+
+            try
+            {
+                clientSocket.Send(byteData);
+            }
+            catch (SocketException ex)
+            {
+                Debug.WriteLine("(SERVER) SocketException while sending to client: " + ex.Message);
             }
         }
         public static void DisplayConnectedClients()
